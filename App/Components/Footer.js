@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 
 class Footer extends Component {
   render() {
     return (
-      <View />
+      <View>
+        <Text>THIS IS THE FOOTER</Text>
+      </View>
     )
   }
 }
