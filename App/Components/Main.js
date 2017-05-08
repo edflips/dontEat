@@ -1,52 +1,63 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import axios from 'axios';
+import React, { Component } from 'react'
+import { View, StyleSheet, Text, Button, ListView, RefreshControl } from 'react-native'
+import axios from 'axios'
 
-import Header from './Header';
-import Listing from './Listing';
-import Footer from './Footer';
+import Header from './Header'
+import Spinner from './Spinner'
+import EstablishmentRow from './EstablishmentRow'
+import Footer from './Footer'
 
 class Main extends Component {
   constructor(props) {
     super(props);
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
+      establishments: ds.cloneWithRows([]),
       lat: null,
       long: null,
       error: null,
-      establishments: []
+      isLoading: false
     }
 
-    this.bringPlaces = this.bringPlaces.bind(this);
+    this.bringPlaces = this.bringPlaces.bind(this)
   }
   
   componentDidMount() {
-
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        // setTimeout(() => {
-          this.setState({
-            lat: position.coords.latitude,
-            long: position.coords.longitude,
-            error: null,
-          },
-          // once lat and long states have been set, use the callback
-          // of setState to call the axios search which rely on theese
-          // coordinates
-          this.bringPlaces
-        );
-        // }, 10000);
-        
-      },
-      error => this.setState({ error: error.message }),
-      { enableHighAccuracy: false, timeout: 5000, maximumAge: 0 },
-    );
+    this.getPosition()
   }
   
+  getPosition() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.setState(
+          {
+            lat: position.coords.latitude,
+            long: position.coords.longitude,
+            ///////////////
+            // NEED TO HANDLE ERRORS
+            ///////////////
+            error: null
+          },
+          // once lat and long states have been set, use the callback
+          // of setState to call the axios search
+          this.bringPlaces
+        )
+      },
+
+      error => this.setState({
+        error: error.message
+      }),
+      
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 5000 },
+    );
+  }
 
   bringPlaces() {
     console.log('bringPlaces() called')
-    console.log('lat', this.state.lat)
-    console.log('long', this.state.long)
+    // console.log('lat', this.state.lat)
+    // console.log('long', this.state.long)
+
+    this.setState({ isLoading: true })
 
     const getPlaces = axios.create({
       baseURL: 'http://api.ratings.food.gov.uk/Establishments/',
@@ -66,34 +77,73 @@ class Main extends Component {
       .then( response => {
         if (response.status === 200) {
 
-          ///////////////
-          // lets sort results by the Distance key
-          ///////////////
-          
+          console.log(response.data.establishments)
+
+          const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
           this.setState({
-            establishments: response.data.establishments
+            establishments: ds.cloneWithRows(response.data.establishments),
+            error: null,
+            isLoading: false
           })
         }
+
+        /////////////////
+        // HANDLE ERRORS
+        /////////////////
+
       })
-      .catch( error => {
-        console.log('error', error);
+      .catch( er => {
+        this.setState({
+          error: er
+        })
+        console.log('error', er)
       })
   }
 
   render() {
     return (
       <View style={styles.container}>
+
         <Header>
-          
-          {console.log('establishments', this.state.establishments)}
+          <Button
+            onPress={this.bringPlaces}
+            title={`RELOAD API`}
+            color="red"
+            accessibilityLabel="refresh" />
           <Text style={{color: 'white'}}>Latitude: {this.state.lat}</Text>
           <Text style={{color: 'white'}}>Longitude: {this.state.long}</Text>
+          {/*<Spinner animating={this.state.isLoading} />*/}
         </Header>
+
         <View style={styles.content}>
-          {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
-          <Listing long={this.state.long} lat={this.state.lat} establishments={this.state.establishments} />
+          {
+            this.state.error &&
+              <Text style={styles.errorMsg}>
+                {`OH NO!\n ${this.state.error}`}
+              </Text>
+          }
+
+          <ListView
+            enableEmptySections
+            refreshControl={ <RefreshControl refreshing={this.state.isLoading} onRefresh={this.bringPlaces.bind(this)} /> }
+            dataSource={this.state.establishments}
+            renderRow={rowData =>
+
+              <EstablishmentRow 
+                key={rowData.FHRSID}
+                name={rowData.BusinessName}
+                address1={rowData.AddressLine1}
+                address2={rowData.AddressLine2}
+                postcode={rowData.PostCode}
+                score={rowData.RatingValue} />
+            
+            } />
+
+          {/*<ListingRows long={this.state.long} lat={this.state.lat} establishments={this.state.establishments} />*/}
         </View>
+
         <Footer />
+
       </View>
     )
   }
@@ -106,7 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     
-    backgroundColor: 'yellow',
+    backgroundColor: '#222',
     paddingTop: 22,
   },
   content: {
@@ -114,6 +164,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
+  },
+  errorMsg: {
+    fontSize: 30,
+    color: 'white',
+    textAlign: 'center',
+    padding: 10
   }
 })
 
