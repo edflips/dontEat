@@ -5,7 +5,7 @@ class Footer extends Component {
   render() {
     return (
       <View style={styles.footer}>
-        <Text style={{color: 'white'}}>THIS IS THE FOOTER</Text>
+        <Text style={{color: 'white'}}>FOOTER</Text>
       </View>
     )
   }
