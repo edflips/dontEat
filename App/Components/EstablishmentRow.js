@@ -4,10 +4,6 @@ import PropTypes from 'prop-types'
 
 class EstablishmentRow extends Component {
 
-  handleTouch(event) {
-    console.log('touched:', this.props.name)
-  }
-
   render() {
     let address = []
     this.props.address1 ? address.push(this.props.address1) : null
@@ -19,7 +15,7 @@ class EstablishmentRow extends Component {
     const score = (num) => !isNaN(parseFloat(num)) ? num : 'N'
 
     return (
-      <TouchableHighlight onPress={this.handleTouch.bind(this)}>
+      <TouchableHighlight {...this.props}>
         <View style={styles.establishment}>
           <View style={styles.scoreWrap}>
             <Text style={styles.scoreText}>{score(this.props.score)}</Text>
@@ -50,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
 
     padding: 8,
-    marginBottom: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    height: 100
   },
 
   scoreWrap: {
