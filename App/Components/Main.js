@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, StyleSheet, Text, Button, FlatList, RefreshControl } from 'react-native'
 import axios from 'axios'
 
-import Map from './Map'
+import HeaderMap from './HeaderMap'
 import Spinner from './Spinner'
 import EstablishmentRow from './EstablishmentRow'
 import ListSeparator from './ListSeparator'
@@ -110,7 +110,7 @@ class Main extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Map lat={this.state.lat} long={this.state.long} establishments={this.state.establishments}/>
+        <HeaderMap lat={this.state.lat} long={this.state.long} establishments={this.state.establishments}/>
 
         <View style={styles.content}>
           {this.state.error &&

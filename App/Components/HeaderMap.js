@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps'
 import ListSeparator from './ListSeparator'
 
 
-class Map extends Component {
+class HeaderMap extends Component {
   _onRegionChange() {
     setTimeout(() => {
       console.log('onRegionChange')
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
   
 })
 
-export default Map
+export default HeaderMap
