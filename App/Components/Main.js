@@ -63,7 +63,7 @@ class Main extends Component {
     const getPlaces = axios.create({
       baseURL: 'http://api.ratings.food.gov.uk/Establishments/',
       timeout: 10000,
-      Maps: {'x-api-version': '2', 'accept': 'application/json', 'content-type': 'application/json'},
+      headers: {'x-api-version': '2', 'accept': 'application/json', 'content-type': 'application/json'},
       params: {
         latitude: this.state.lat,
         longitude: this.state.long,
