@@ -30,7 +30,7 @@ class HeaderMap extends Component {
             </Marker>
 
             {this.props.establishments.map( marker =>
-              <Marker key={marker.FHRSID} coordinate={marker.geocode} title={marker.BusinessName} />
+              <Marker key={marker.FHRSID} coordinate={marker.geocode} title={`${marker.RatingValue} ${marker.BusinessName}`} />
             )}
 
           </MapView>
