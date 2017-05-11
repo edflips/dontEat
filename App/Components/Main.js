@@ -25,34 +25,33 @@ class Main extends Component {
     this.getPosition()
   }
   
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
   getPosition() {
     //////////////////////////
     console.log('requesting position')
     //////////////////////////
 
     navigator.geolocation.getCurrentPosition(
-      position => {
-        this.setState(
-          {
-            lat: position.coords.latitude,
-            long: position.coords.longitude,
-            ///////////////
-            // NEED TO HANDLE ERRORS
-            ///////////////
-            error: null
-          },
-          // once lat and long states have been set, use the callback
-          // of setState to call the axios search
-          this.queryFSAAPI
-        )
-      },
+      position => {},
+      error => alert(error.message),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    )
 
-      error => this.setState({
-        error: error.message
-      }),
-      
-      { enableHighAccuracy: true, timeout: 5000, maximumAge: 5000 },
-    );
+    this.watchID = navigator.geolocation.watchPosition(
+      position => {
+        // var lastPosition = JSON.stringify(position);
+        this.setState({
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+          ///////////////
+          // NEED TO HANDLE ERRORS
+          ///////////////
+          error: null
+        })
+    })
   }
 
   queryFSAAPI() {
@@ -124,9 +123,16 @@ class Main extends Component {
             keyExtractor={ (item, index) => item.FHRSID}
             data={this.state.establishments}
             ItemSeparatorComponent={ListSeparator}
-            refreshing={this.state.isLoading}
-            onRefresh={this.getPosition.bind(this)}
 
+            refreshControl={
+              <RefreshControl
+                  refreshing={this.state.isLoading}
+                  onRefresh={this.queryFSAAPI}
+                  title="Pull to refresh"
+                  tintColor="#fff"
+                  titleColor="#fff"
+                />
+            }
             renderItem={ ({item, index}) =>
               <EstablishmentRow
                 onPress={ () => { this.flatListRef.scrollToIndex({animated: true, index: index}) }}
@@ -136,6 +142,7 @@ class Main extends Component {
                 address2={item.AddressLine2}
                 postcode={item.PostCode}
                 score={item.RatingValue}
+                coords={item.geocode}
                 {...this.props} />
             }
             
@@ -161,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     
-    backgroundColor: '#222',
+    backgroundColor: 'deepskyblue',
     paddingTop: 22,
   },
   content: {
