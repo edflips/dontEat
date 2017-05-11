@@ -4,7 +4,7 @@ import { View } from 'react-native'
 const ListSeparator = () =>
   <View style={{
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: 'gainsboro',
     width: '100%'
   }}></View>
 
