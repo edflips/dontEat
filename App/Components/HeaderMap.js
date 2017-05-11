@@ -17,17 +17,17 @@ class HeaderMap extends Component {
         <View style={styles.container}>
           {console.log(this.props.establishments)}
           <MapView style={styles.map}
-            initialRegion={{
+            mapType='standard'
+            showsUserLocation={true}
+            followsUserLocation={true}
+            region={{
               latitude: this.props.lat,
               longitude: this.props.long,
               latitudeDelta: 0.001,
-              longitudeDelta: 0.001
+              longitudeDelta: 0.001,
             }}
-            onRegionChange={this._onRegionChange}>
-            
-            <Marker key={"currentPosition"} coordinate={{ latitude: this.props.lat, longitude: this.props.long, }}>
-              <View style={styles.youMarker}><Text>:P</Text></View>
-            </Marker>
+            // onRegionChange={this._onRegionChange}
+            >
 
             {this.props.establishments.map( marker =>
               <Marker key={marker.FHRSID} coordinate={marker.geocode} title={`${marker.RatingValue} ${marker.BusinessName}`} />
