@@ -102,7 +102,7 @@
       <AdditionalOptions>
       </AdditionalOptions>
       <LocationScenarioReference
-         identifier = "../../mapstogpx20170511_123625.gpx"
+         identifier = "../../default.gpx"
          referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>
