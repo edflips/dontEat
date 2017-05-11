@@ -51,6 +51,7 @@ class Main extends Component {
           ///////////////
           error: null
         })
+        this.queryFSAAPI()
     })
   }
 
