@@ -70,7 +70,7 @@ class Main extends Component {
         maxDistanceLimit: 1,
         sortOptionKey: 'distance',
         businessTypeId: 1,
-        pageSize: 20
+        pageSize: 50
       },
       validateStatus: status => status >= 200 && status < 300
     });
@@ -151,7 +151,7 @@ class Main extends Component {
             initialScrollIndex={9}
             getItemLayout={
               (data, index) => (
-                {length: 101, offset: 101 * index, index}
+                {length: 76, offset: 76 * index, index}
               )}
             
             {...this.props} />
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     
-    backgroundColor: 'deepskyblue',
+    backgroundColor: '#4b6263',
     paddingTop: 22,
   },
   content: {
