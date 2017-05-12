@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text, Button, FlatList, RefreshControl } from 'react-native'
 import axios from 'axios'
+import { getPlacesFromFSA } from '../helpers/getThings'
+
+import { GOOGLE_PLACES_API_KEY } from '../../environment'
+
 
 import HeaderMap from './HeaderMap'
 import Spinner from './Spinner'
@@ -56,25 +60,12 @@ class Main extends Component {
   }
 
   queryFSAAPI() {
-    //////////////////////////
-    console.log('queryFSAAPI() called')
-    //////////////////////////
+    console.log(getPlacesFromFSA(this.state.lat, this.state.long))
 
-    const getPlaces = axios.create({
-      baseURL: 'http://api.ratings.food.gov.uk/Establishments/',
-      timeout: 10000,
-      headers: {'x-api-version': '2', 'accept': 'application/json', 'content-type': 'application/json'},
-      params: {
-        latitude: this.state.lat,
-        longitude: this.state.long,
-        maxDistanceLimit: 1,
-        sortOptionKey: 'distance',
-        businessTypeId: 1,
-        pageSize: 50
-      },
-      validateStatus: status => status >= 200 && status < 300
-    });
-
+    const getPlaces = axios.create(
+      getPlacesFromFSA(this.state.lat, this.state.long)
+    )
+    
     getPlaces()
       .then( response => {
         // convert latitude and longitude values from strings to floats
@@ -92,6 +83,13 @@ class Main extends Component {
         /////////////////
 
       })
+      // .then( response => {
+      //   this.setState({
+      //     establishments: response.data.establishments,
+      //     error: null,
+      //     isLoading: false
+      //   })
+      // })
       .then( response => {
         this.setState({
           establishments: response.data.establishments,
@@ -119,32 +117,25 @@ class Main extends Component {
               </Text>
           }
 
-          <FlatList
-            style={{ flex: 1 }}
+          <FlatList style={{ flex: 1 }}
             keyExtractor={ (item, index) => item.FHRSID}
             data={this.state.establishments}
             ItemSeparatorComponent={ListSeparator}
-
             refreshControl={
-              <RefreshControl
-                  refreshing={this.state.isLoading}
-                  onRefresh={this.queryFSAAPI}
-                  title="Pull to refresh"
-                  tintColor="#fff"
-                  titleColor="#fff"
-                />
+              <RefreshControl refreshing={this.state.isLoading} onRefresh={this.queryFSAAPI} title="Pull to refresh" tintColor="#fff" titleColor="#fff" />
             }
-            renderItem={ ({item, index}) =>
-              <EstablishmentRow
-                onPress={ () => { this.flatListRef.scrollToIndex({animated: true, index: index}) }}
-                uid={item.FHRSID}
-                name={item.BusinessName}
-                address1={item.AddressLine1}
-                address2={item.AddressLine2}
-                postcode={item.PostCode}
-                score={item.RatingValue}
-                coords={item.geocode}
-                {...this.props} />
+            renderItem={
+              ({item, index}) =>
+                <EstablishmentRow
+                  onPress={ () => { this.flatListRef.scrollToIndex({animated: true, index: index}) }}
+                  uid={item.FHRSID}
+                  name={item.BusinessName}
+                  address1={item.AddressLine1}
+                  address2={item.AddressLine2}
+                  postcode={item.PostCode}
+                  score={item.RatingValue}
+                  coords={item.geocode}
+                  {...this.props} />
             }
             
             ref={ref => this.flatListRef = ref}
