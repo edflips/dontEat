@@ -1,5 +1,7 @@
 # dontEat
-React Native iOS app which shows the UK's Food Standards Agency scores for establishments in your immediate vicinity
+React Native iOS app which shows the UK's Food Standards Agency scores for establishments in your immediate vicinity.
+
+![dontEat app](https://github.com/PUncle/dontEat/raw/master/img/dontEat.png)
 
 # Installation
 1) Download zip or clone
