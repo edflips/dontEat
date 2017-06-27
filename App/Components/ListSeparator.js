@@ -1,11 +1,14 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
-const ListSeparator = () =>
-  <View style={{
+const styles = StyleSheet.create({
+  divider: {
     height: 1,
     backgroundColor: '#4b6263',
-    width: '100%'
-  }}></View>
+    width: '100%',
+  },
+})
 
-  export default ListSeparator
+const ListSeparator = () => <View style={styles.divider} />
+
+export default ListSeparator
