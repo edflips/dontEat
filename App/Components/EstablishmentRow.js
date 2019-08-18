@@ -8,7 +8,6 @@ class EstablishmentRow extends Component {
     let address = []
     this.props.address1 ? address.push(this.props.address1) : null
     this.props.address2 ? address.push(this.props.address2) : null
-    // this.props.postcode ? address.push(this.props.postcode) : null
     address = address.join(', ')
 
     // check if the score is a number
@@ -52,8 +51,6 @@ const styles = StyleSheet.create({
   },
 
   scoreWrap: {
-    // flexDirection: 'column',
-    // justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: 'white',
     width: 50,
@@ -70,14 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // backgroundColor: 'green',
-    // width: 50,
-    // height: 50,
     backgroundColor: 'transparent',
-    // padding: 10
-    
-    
-    
   },
 
   nameWrap: {
